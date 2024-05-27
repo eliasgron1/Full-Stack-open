@@ -41,8 +41,15 @@ const App = () => {
 
     if (!newName || !newNumber) {
       alert("no number or name was given");
-
-    } else if (!persons.some((person) => person.name === newName)) {
+      
+    } else if (persons.some((person) => person.name === newName && person.number !== newNumber)) {
+      console.log("person already exists")
+      if(window.confirm(`Do you want to change ${newName}'s number to ${newNumber}`)){
+        console.log("confirmed")
+      }
+      
+    
+    } else if (!persons.some((person) => person.name === newName && person.number === newNumber)) {
       personService
         .create(personObj)
         .then((response) => setPersons(persons.concat(response)))
@@ -72,6 +79,9 @@ const App = () => {
           console.log(`deleted: ${response.name} ${response.id}`)
           setPersons(persons => persons.filter(p => p.id !== response.id))
       })
+        .catch(error => {
+          console.error("error deleting person", error)
+        })
     }
   };
 
