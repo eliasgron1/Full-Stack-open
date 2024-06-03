@@ -1,196 +1,181 @@
 import { useEffect, useState } from "react";
-import personService from "./services/persons";
+import countriesService from "./services/countries";
 
 const App = () => {
-  const [persons, setPersons] = useState([]);
-  const [newName, setNewName] = useState("");
-  const [newNumber, setNewNumber] = useState("");
-  const [search, setSearch] = useState("");
-  const [contactsToShow, setContactsToShow] = useState([]);
 
-  useEffect(() => {
-    personService.getAll().then((response) => {
-      setPersons(response);
-      setContactsToShow(response);
-    });
-    console.log("personService.getAll called");
-  }, []);
-  
-  useEffect(() => {
-    setContactsToShow(persons)
-  },[persons])
+  //STATES
+  const [search,setSearch] = useState('')
+  const [countries, setCountries] = useState([])
+  const [countriesToShow, setCountriesToShow] = useState([])
 
-
-  const handleNameChange = (event) => {
-    setNewName(event.target.value);
-  };
-  const handleNumberChange = (event) => {
-    setNewNumber(event.target.value);
-  };
+  //EVENT HANDLERS
   const handleSearchChange = (event) => {
-    setSearch(event.target.value);
-  };
+    setSearch(event.target.value)
+  }
 
-  const addPerson = (event) => {
-    event.preventDefault();
-    const personObj = {
-      name: newName,
-      number: newNumber,
-      id: crypto.randomUUID(),
-    };
-
-    if (!newName || !newNumber) {
-      alert("no number or name was given");
-      
-    } else if (persons.some((person) => person.name === newName && person.number !== newNumber)) {
-      console.log("person already exists")
-      if(window.confirm(`Do you want to change ${newName}'s number to ${newNumber}`)){
-        console.log("confirmed")
-      }
-      
-    
-    } else if (!persons.some((person) => person.name === newName && person.number === newNumber)) {
-      personService
-        .create(personObj)
-        .then((response) => setPersons(persons.concat(response)))
-      
-        console.log(
-        "added person: ",
-        personObj.name,
-        "number: ",
-        personObj.number,
-        "with id: ",
-        personObj.id
-      );
-
-      setNewName("");
-      setNewNumber("");
-      console.log(persons)
-
-    } else {
-      alert(`${newName} is already saved`);
-    }
-  };
-
-  const deletePerson = (person) => {
-    if (window.confirm(`Do you really want to delete ${person.name}`)) {
-      personService.deletePersonById(person.id)
-        .then((response) => {
-          console.log(`deleted: ${response.name} ${response.id}`)
-          setPersons(persons => persons.filter(p => p.id !== response.id))
+  //HOOKS
+  useEffect(() => {
+    countriesService.getAll()
+      .then(response => {
+        setCountries(response)
+        console.log(response)
       })
-        .catch(error => {
-          console.error("error deleting person", error)
-        })
-    }
-  };
+  },[])
 
-  const searchPerson = (event) => {
-    event.preventDefault();
-    if (search === '') {
-      setContactsToShow(persons);
-    } else {
-      setContactsToShow(
-        persons.filter(
-          (person) =>
-            person.name.toUpperCase().includes(search.toUpperCase()) ||
-            person.number.includes(search)
-        )
-      );
-    }
-  };
+  //FUNCTIONS
+  const searchCountry = (event) => {
+    event.preventDefault()
+    console.log("search submitted: ", search)
+    setCountriesToShow(
+      countries.filter(country => 
+        country.name.common.toUpperCase().includes(search.toUpperCase())
+      )
+    )
 
-  return (
+    // countriesService.
+    //   getByName(search)
+    //     .then(response => {
+    //         console.log(response)
+    //     })
+    //     .catch(error => {
+    //       console.log("error fetching country")
+    //     })
+  }
+
+  countriesToShow.length
+  return(
     <div>
-      <h1>Phonebook</h1>
-
-      <h2>Filter contacts</h2>
-      <Filter
-        searchPerson={searchPerson}
-        search={search}
+      <h1>
+        Search Countries
+      </h1>
+      <Search
         handleSearchChange={handleSearchChange}
+        search={search}
+        searchCountry={searchCountry}
       />
-
-      <h2>Submit new contact</h2>
-      <AddContact
-        addPerson={addPerson}
-        newName={newName}
-        handleNameChange={handleNameChange}
-        newNumber={newNumber}
-        handleNumberChange={handleNumberChange}
-      />
-
-      <h2>Numbers</h2>
       <div>
-        {contactsToShow.map((person) => (
-          <NumberLine
-            person={person}
-            key={person.id}
-            deletePerson={deletePerson}
-          />
-        ))}
+        <Countries
+          setCountriesToShow={setCountriesToShow}
+          countriesToShow={countriesToShow}
+        />
       </div>
     </div>
-  );
-};
+  )
+}
+
 
 // COMPONENTS
+const Search = ({searchCountry, search, handleSearchChange}) => {
+  return(
+    <form
+      onSubmit={searchCountry}
+      >
+      <p>
+        search: 
+      </p>
+      <input
+        type="text"
+        value={search}
+        onChange={handleSearchChange}
+      />
+      <button
+        type="submit"
+        >
+        search
+      </button>
 
-const AddContact = ({
-  addPerson,
-  newName,
-  handleNameChange,
-  newNumber,
-  handleNumberChange,
-}) => {
-  return (
-    <>
-      <form onSubmit={addPerson}>
-        <div>
-          <div>
-            Name:
-            <input value={newName} onChange={handleNameChange} />
-          </div>
-          <div>
-            Number:
-            <input value={newNumber} onChange={handleNumberChange} />
-          </div>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-    </>
-  );
-};
+    </form>
+  )
+}
 
-const Filter = (props) => {
-  const { search, handleSearchChange, searchPerson } = props;
-  return (
-    <>
-      <form onSubmit={searchPerson}>
-        <div>
-          <div>
-            Search:
-            <input value={search} onChange={handleSearchChange} />
-          </div>
-          <div>
-            <button type="submit">filter</button>
-          </div>
-        </div>
-      </form>
-    </>
-  );
-};
+const Countries = ({countriesToShow, setCountriesToShow}) => {
+  console.log("countriesToShow arr length: ", countriesToShow.length)
+  
+  if (countriesToShow.length === 1) {
+    return(
+      <CountryPage
+        country={countriesToShow[0]}
+      />
+    )
+  }
+  else if (countriesToShow.length <= 10){
+    return(
+      <div>
+        {countriesToShow.map(country => 
+          <CountryLine
+          setCountriesToShow={setCountriesToShow}
+          country={country}
+          key={country.name.common}
+          />
+        )}
+      </div>
+    )
+  }
+  else {
+    return(
+    <div>
+      Too many countries to show :C
+    </div>
+    )
+  }
+} 
 
-const NumberLine = (props) => {
-  const { person, deletePerson } = props;
-  return (
+const CountryLine = ({country, setCountriesToShow}) => {
+  console.log("country is: ", country)
+  return(
     <li>
-      {person.name}, {person.number}
-      <button onClick={() => deletePerson(person)}>delete</button>
+      {country.name.common} 
+      <button
+        onClick={() => {setCountriesToShow([country]), console.log("showing ", country)}}
+      >
+        show
+      </button>
     </li>
-  );
-};
+  )
+}
 
-export default App;
+const CountryPage = ({country}) => {
+  console.log("hello")
+
+  useEffect(() => {
+    countriesService.
+    getCapitalWeather(country.latlng[0], country.latlng[1])
+    .then(response => {
+      console.log(response)
+    })
+    .catch(error => {
+      console.log("error fetching weather for ", country.latlng[0], country.latlng[1])
+    })
+  },[country])
+  
+  return(
+    <div>
+      <div>
+        <h2>{country.name.common}</h2>
+        <p>region: {country.subregion}</p>
+      
+      <p>currencies: </p>
+      {Object.values(country.currencies).map((currency) => (
+        <li key={currency.name}>{currency.name} ({currency.symbol})</li>
+      ))}
+      </div>
+
+      <div>
+        <h3>languages</h3>
+        {Object.values(country.languages).map((language) => (
+          <li key={language}>{language}</li>
+        ))}
+      </div>
+
+      <div>
+        <img src={country.flags.png} alt="flag" />
+        <h3>Weather</h3>
+        <div>
+          weather
+        </div>
+      </div>
+    </div>
+  )
+} 
+
+export default App
