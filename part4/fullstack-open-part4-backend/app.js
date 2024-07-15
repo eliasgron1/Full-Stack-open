@@ -9,6 +9,7 @@ const mongoose = require('mongoose') // mongodb library
 
 mongoose.set('strictQuery', false)
 
+logger.info('running on ', config.NODE_ENV)
 logger.info('connecting to ', config.MONGODB_URI)
 
 mongoose.connect(config.MONGODB_URI)
