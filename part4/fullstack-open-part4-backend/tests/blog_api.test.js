@@ -10,7 +10,7 @@ const api = supertest(app)
 
 const initial_blogs = [
   {
-    "title": "man does a tester 2",
+    "title": "man does a tester 1",
     "author": "testman ",
     "url": "blaablaa.com",
     "likes": 5,
@@ -31,7 +31,6 @@ const initial_blogs = [
 
 beforeEach(async () => { // Initialize the database before tests
   await Blog.deleteMany({})
-  console.log('db reset')
   for (let n in initial_blogs) {
     let blogObject = new Blog(initial_blogs[n])
     await blogObject.save()
@@ -39,44 +38,46 @@ beforeEach(async () => { // Initialize the database before tests
 })
 
 
-describe('blog api tests', () => {
-  test('blogs are returned in json', async () => {
+describe('get requests', () => {
+  test('are returned in json', async () => {
     await api
-      .get('/api/blogs')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+    .get('/api/blogs')
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
   })
 
-  test('all blogs are returned', async () => {
+  test('are returned fully', async () => {
     const response = await api.get('/api/blogs')
     assert.strictEqual(response.body.length, initial_blogs.length)
   })
-
-  test('blog identifier number is named id', async () => {
+  
+  test('objects contain id and not _id', async () => {
     const response = await api.get('/api/blogs')
     const keys = Object.keys(response.body[0])
     assert(keys.includes('id'))
   })
+})
 
-  test('post requests work correctly', async () => {
+describe('post requests', () => {
+  test('work correctly', async () => {
     const new_blog = {
       "title": "man creates a new blog",
       "author": "newcomer ",
       "url": "url.com",
     }
     const request = await api.post('/api/blogs')
-      .send(new_blog)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
-
+    .send(new_blog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+    
     const response = await api.get('/api/blogs')
     const titles = response.body.map(res => res.title)
-
+    
     assert.strictEqual(response.body.length, initial_blogs.length + 1)
     assert(titles.includes('man creates a new blog'))
   })
-
-  test('missing likes property defaults to 0', async () => {
+  
+  test('with missing likes property defaults to 0', async () => {
     const new_blog = {
       "title": "man creates a new blog",
       "author": "newcomer ",
@@ -86,23 +87,36 @@ describe('blog api tests', () => {
       .send(new_blog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
-    assert.strictEqual(request.body.likes, 0)
+      assert.strictEqual(request.body.likes, 0)
   })
-
-  test('missing title or url causes bad request', async () => {
+  
+  test('with missing title or url causes bad request', async () => {
     const new_blog = {
       "author": "newcomer ",
       "url": "url.com",
     }
     const request = await api.post('/api/blogs')
-      .send(new_blog)
-      .expect(400)
+    .send(new_blog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+  })
+})
+
+describe('delete requests', () => {
+  test('work correctly', async () => {
+    const response = await api.get('/api/blogs')
+    const id = response.body[0].id
+    
+    const request = await api.delete(`/api/blogs/${id}`)
+      .expect(200)
       .expect('Content-Type', /application\/json/)
-    console.log(request.body)
-  })
 
-
-  after(async () => {
-    await mongoose.connection.close()
+    const deletion_response = await api.get('/api/blogs')
+    assert.strictEqual(deletion_response.body.length, initial_blogs.length - 1)
   })
-});
+})
+      
+
+after(async () => {
+  await mongoose.connection.close()
+})

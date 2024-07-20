@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "start": "cross-env NODE_ENV=production node index.js",
-    "test": "cross-env NODE_ENV=test node --test",
+    "test": "cross-env NODE_ENV=test node --test tests/blog_api.test.js",
     "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../frontend && npm run build && @powershell Copy-Item dist -Recurse ../full-stack-open-part3-backend",
     "deploy": "fly deploy",
     "deploy:full": "npm run build:ui && npm run deploy",
@@ -26,7 +26,7 @@
     "@eslint/js": "^9.6.0",
     "@flydotio/dockerfile": "^0.5.7",
     "@stylistic/eslint-plugin-js": "^2.3.0",
-    "eslint": "^9.6.0",
+    "eslint": "^9.7.0", 
     "globals": "^15.7.0",
     "nodemon": "^3.1.4",
     "supertest": "^7.0.0"

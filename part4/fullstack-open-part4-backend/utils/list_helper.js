@@ -1,18 +1,19 @@
-// Takes input of blog object array 
+// Takes input of blog object array
 // Outputs 1
 const dummy = (blogs) => {
+  console.log(blogs)
   return 1
 }
 
-// Takes input of blog object array 
+// Takes input of blog object array
 // Outputs the count of all likes
 const totalLikes = (blogs) => {
   return blogs.reduce((sum, { likes }) => sum + likes, 0)
 }
 
 
-// Takes input of blog object array 
-// Outputs the blog object with the most likes 
+// Takes input of blog object array
+// Outputs the blog object with the most likes
 const favouriteBlog = (blogs) => {
   const most_likes = blogs.reduce((current_max, blog) => {
     return ((current_max.likes < blog.likes) ? blog : current_max)
@@ -26,8 +27,8 @@ const favouriteBlog = (blogs) => {
 }
 
 
-// Takes input of blog object array 
-// Outputs object containing the author that has made the most blogs, and the blog amount  
+// Takes input of blog object array
+// Outputs object containing the author that has made the most blogs, and the blog amount
 const authorWithMostBlogs = (blogs) => {
   const author_blog_count = {}
 
@@ -60,7 +61,7 @@ const authorWithMostBlogs = (blogs) => {
 }
 
 
-// Takes input of blog object array 
+// Takes input of blog object array
 // Outputs object containing the author that has the most likes and the like amount
 const mostLikes = (blogs) => {
   const author_like_count = {}
