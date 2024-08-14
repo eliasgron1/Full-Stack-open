@@ -1,3 +1,5 @@
+const User = require('../models/user')
+
 // Takes input of blog object array
 // Outputs 1
 const dummy = (blogs) => {
@@ -94,11 +96,18 @@ const mostLikes = (blogs) => {
   }
 }
 
+
+const usersInDb = async () => {
+  const users = await User.find({})
+  return users.map(user => user.toJSON())
+}
+
 // Export the functions we need to use
 module.exports = {
   dummy,
   totalLikes,
   favouriteBlog,
   authorWithMostBlogs,
-  mostLikes
+  mostLikes,
+  usersInDb
 }
