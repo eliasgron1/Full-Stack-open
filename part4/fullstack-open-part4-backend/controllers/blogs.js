@@ -69,22 +69,31 @@ blogsRouter.delete('/:id', async (request, response) => {
 })
 
 
-blogsRouter.put('/:id', async (request, response, next) => {
-  try {
-    const id = request.params.id
-    const body = request.body
-    const blog = {
-      title: body.title,
-      author: body.author,
-      url: body.url,
-      likes: body.likes
-    }
-    const result = await Blog.findByIdAndUpdate(id, blog, { new: true, runValidators: true, context: 'query' })
-    response.status(200).json(result)
+blogsRouter.put('/:id', async (request, response) => {
+  const blogId = request.params.id
+  const body = request.body
+  const updatedBlog = {
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes
   }
-  catch (exception) {
-    next(exception)
+  const decodedToken = jwt.verify(request.token, process.env.SECRET)
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: 'token invalid' })
   }
+
+  const currentBlog = await Blog.findById(blogId)
+
+  if (!currentBlog) {
+    return response.status(404).json({ error: 'blog not found' })
+  }
+  if (currentBlog.user.toString() !== decodedToken.id.toString()) {
+    return response.status(401).json({ error: 'user invalid' })
+  }
+
+  const result = await Blog.findByIdAndUpdate(blogId, updatedBlog, { new: true, runValidators: true, context: 'query' })
+  response.status(200).json(result)
 })
 
 

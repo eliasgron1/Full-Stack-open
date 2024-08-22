@@ -149,6 +149,18 @@ describe('post requests', () => {
       .expect(400)
       .expect('Content-Type', /application\/json/)
   })
+
+  test('with missing token causes error code 401', async () => {
+    const new_blog = {
+      "title": "401",
+      "author": "newcomer ",
+      "url": "url.com",
+    }
+    const request = await api.post('/api/blogs')
+      .send(new_blog)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+  })
 })
 
 // TESTS FOR DELETE REQUESTS
@@ -170,6 +182,7 @@ describe('delete requests', () => {
 // TESTS FOR PUT REQUESTS
 describe('put requests', () => {
   test('can add likes', async () => {
+    const token = await getToken()
     const response = await api.get('/api/blogs')
     const new_blog = {
       "title": response.body[0].title,
@@ -180,6 +193,7 @@ describe('put requests', () => {
     const id = response.body[0].id
     await api.put(`/api/blogs/${id}`)
       .send(new_blog)
+      .set('Authorization', `Bearer ${token}`)
       .expect(200)
       .expect('Content-Type', /application\/json/)
     const changed_response = await api.get('/api/blogs')
