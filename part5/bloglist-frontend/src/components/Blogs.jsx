@@ -1,4 +1,4 @@
-import Togglable from "./Togglable"
+import Togglable from './Togglable'
 import blogService from '../services/blogs'
 
 // Lists of all the blogs
@@ -40,26 +40,35 @@ const Blog = ({ blog, setBlogs, user, showNotification }) => {
 const ExpandedBlog = ({ blog, setBlogs, user, showNotification }) => {
   const likeHandler = async (event) => {
     event.preventDefault()
-    const newBlog = {
-      ...blog,
-      likes: blog.likes + 1
-    }
-
-    const response = await blogService.likeBlog(newBlog, blog.id)
-    setBlogs((prevBlogs) =>
-      prevBlogs.map((blog) =>
-        blog.id === response.id ? { ...response, user: blog.user } : blog
+    try {
+      const newBlog = {
+        ...blog,
+        likes: blog.likes + 1
+      }
+      const response = await blogService.likeBlog(newBlog, blog.id)
+      setBlogs((prevBlogs) =>
+        prevBlogs.map((blog) =>
+          blog.id === response.id ? { ...response, user: blog.user } : blog
+        )
       )
-    )
+    }
+    catch (exception) {
+      console.log('error liking blog')
+    }
   }
 
   const deleteHandler = async (event) => {
     event.preventDefault()
-    if (window.confirm(`do you want to delete ${blog.title}`)) {
-      console.log('deleted', blog.id)
-      const response = await blogService.deleteBlog(blog.id)
-      setBlogs(prevBlogs => prevBlogs.filter(blog => blog.id !== response.id))
-      showNotification(`blog deleted`)
+    try {
+      if (window.confirm(`do you want to delete ${blog.title}`)) {
+        console.log('deleted', blog.id)
+        const response = await blogService.deleteBlog(blog.id)
+        setBlogs(prevBlogs => prevBlogs.filter(blog => blog.id !== response.id))
+        showNotification('blog deleted')
+      }
+    }
+    catch (exception) {
+      console.log('error deleting blog')
     }
   }
 

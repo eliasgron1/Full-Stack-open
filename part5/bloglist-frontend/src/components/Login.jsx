@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import loginService from '../services/login'
+import blogService from '../services/blogs'
 
-
-// Login form with fields for password and username 
+// Login form with fields for password and username
 const Login = ({ user, setUser, showNotification }) => {
   const [password, setPassword] = useState('')
   const [username, setUsername] = useState('')
@@ -19,19 +19,22 @@ const Login = ({ user, setUser, showNotification }) => {
         'loggedBloglistUser', JSON.stringify(user)
       )
       setUser(user)
+      blogService.setToken(user.token)
       setUsername('')
       setPassword('')
       console.log('login successful, user:', user)
     }
     catch (exception) {
-      showNotification(`wrong username or password`)
+      showNotification('wrong username or password')
       console.log('error', exception)
     }
   }
 
-  // handle logging out, clears local browser storage 
+  // handle logging out, clears local browser storage
   const logoutHandler = (event) => {
-    setUser(null)
+    event.preventDefault()
+    setUser('')
+    blogService.setToken('')
     window.localStorage.clear()
     console.log('user logged out')
   }

@@ -7,16 +7,16 @@ import blogService from './services/blogs'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState('')
   const [message, setMessage] = useState(null)
   const blogFormRef = useRef()
 
   // fetch initial blogs in database
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
+    blogService.getAll().then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)))
   }, [])
 
-  // check for a saved user in local storage 
+  // check for a saved user in local storage
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
     if (loggedUserJSON) {
@@ -28,7 +28,7 @@ const App = () => {
 
   // Handle messages displayed on page
   const showNotification = (message) => {
-    setMessage(message);
+    setMessage(message)
     setTimeout(() => {
       setMessage(null)
     }, 3000)
@@ -42,7 +42,7 @@ const App = () => {
         showNotification={showNotification}
       />
 
-      {user === null ?
+      {!user ?
         <p>login to create a new blog entry</p> :
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
           <BlogForm
@@ -73,9 +73,9 @@ const Notification = ({ message }) => {
     return null
   }
   return (
-    <div className="notification">
+    < div className='notification' >
       {message}
-    </div>
+    </div >
   )
 }
 
