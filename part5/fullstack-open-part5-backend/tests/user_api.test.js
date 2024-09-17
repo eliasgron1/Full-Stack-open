@@ -8,7 +8,7 @@ const { usersInDb } = require('../utils/list_helper')
 
 const api = supertest(app)
 
-const initial_users = [
+const initialUsers = [
   {
     name: 'root',
     username: 'root',
@@ -47,7 +47,7 @@ describe('creating a new user', () => {
       .expect('Content-Type', /application\/json/)
     const savedUsers = await usersInDb()
 
-    assert.strictEqual(savedUsers.length, initial_users.length + 1)
+    assert.strictEqual(savedUsers.length, initialUsers.length + 1)
   })
 })
 
@@ -65,7 +65,7 @@ describe('username and password validation', () => {
       .expect('Content-Type', /application\/json/)
     const savedUsers = await usersInDb()
 
-    assert.strictEqual(savedUsers.length, initial_users.length)
+    assert.strictEqual(savedUsers.length, initialUsers.length)
   })
   test('works when password length < 4', async () => {
     const newUser = {
@@ -80,7 +80,7 @@ describe('username and password validation', () => {
       .expect('Content-Type', /application\/json/)
     const savedUsers = await usersInDb()
 
-    assert.strictEqual(savedUsers.length, initial_users.length)
+    assert.strictEqual(savedUsers.length, initialUsers.length)
   })
   test('works when username not unique', async () => {
     const newUser = {
@@ -95,7 +95,7 @@ describe('username and password validation', () => {
       .expect('Content-Type', /application\/json/)
     const savedUsers = await usersInDb()
 
-    assert.strictEqual(savedUsers.length, initial_users.length)
+    assert.strictEqual(savedUsers.length, initialUsers.length)
   })
 })
 
@@ -104,7 +104,7 @@ describe('get requests to /api/users', () => {
     const response = await api.get('/api/users')
       .expect(200)
       .expect('Content-Type', /application\/json/)
-    assert.strictEqual(response.body.length, initial_users.length)
+    assert.strictEqual(response.body.length, initialUsers.length)
   })
 })
 

@@ -1,68 +1,59 @@
 import { useState } from 'react'
-import blogService from '../services/blogs'
 
 
 // Form for creating new blogs, not rendered unless user logged in
-const BlogForm = ({ setBlogs, showNotification, blogFormRef }) => {
+const BlogForm = ({ createBlog }) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState('')
   const [url, setUrl] = useState('')
 
-  // Send post request to backend
+
+  // Call blogSubmitHandler
   const blogSubmitHandler = async (event) => {
     event.preventDefault()
-    try {
-      const newBlog = {
-        'title': title,
-        'author': author,
-        'url': url
-      }
-      const response = await blogService.postBlog(newBlog)
-      showNotification(`added ${response.title} by ${response.author}`)
-      setBlogs((prevBlogs) => prevBlogs.concat(response))
-      setTitle('')
-      setAuthor('')
-      setUrl('')
-      blogFormRef.current.changeVisibility()
-      console.log('blog submitted ', response)
+    const blog = {
+      'title': title,
+      'author': author,
+      'url': url
     }
-    catch (exception) {
-      showNotification('error creating new blog')
-      console.log('error creating blog: ', exception)
-    }
+    createBlog(blog)
+    setTitle('')
+    setAuthor('')
+    setUrl('')
   }
+
 
   return (
     <form onSubmit={blogSubmitHandler}>
       <h2>add new blog</h2>
       <div>
-        title
         <input
-          type="text"
+          type='text'
           value={title}
-          name="Title"
+          name='Title'
           onChange={({ target }) => setTitle(target.value)}
+          placeholder='title'
         />
       </div>
       <div>
-        author
         <input
-          type="text"
+          type='text'
           value={author}
-          name="Author"
+          name='Author'
           onChange={({ target }) => setAuthor(target.value)}
+          placeholder='author'
         />
       </div>
       <div>
-        url
         <input
-          type="text"
+          type='text'
           value={url}
-          name="Url"
+          name='Url'
           onChange={({ target }) => setUrl(target.value)}
+          placeholder='url'
         />
       </div>
-      <button type="submit">submit</button>
+      <button type='submit'>submit</button>
     </form>
   )
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import Blogs from './components/Blogs'
+import BlogList from './components/BlogList'
 import Login from './components/Login'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
@@ -26,12 +26,28 @@ const App = () => {
     }
   }, [])
 
-  // Handle messages displayed on page
+  // handle messages displayed on page
   const showNotification = (message) => {
     setMessage(message)
     setTimeout(() => {
       setMessage(null)
     }, 3000)
+  }
+
+  // Send post request to backend
+  const createBlog = async (blog) => {
+    try {
+      const response = await blogService.postBlog(blog)
+      showNotification(`added ${response.title} by ${response.author}`)
+      setBlogs((prevBlogs) => prevBlogs.concat(response))
+
+      blogFormRef.current.changeVisibility()
+      console.log('blog submitted ', response)
+    }
+    catch (exception) {
+      showNotification('error creating new blog')
+      console.log('error creating blog: ', exception)
+    }
   }
 
   return (
@@ -46,9 +62,7 @@ const App = () => {
         <p>login to create a new blog entry</p> :
         <Togglable buttonLabel='new blog' ref={blogFormRef}>
           <BlogForm
-            blogFormRef={blogFormRef}
-            setBlogs={setBlogs}
-            showNotification={showNotification}
+            createBlog={createBlog}
           />
         </Togglable>
       }
@@ -57,11 +71,11 @@ const App = () => {
         message={message}
       />
 
-      <Blogs
-        showNotification={showNotification}
-        user={user}
-        setBlogs={setBlogs}
+      <BlogList
         blogs={blogs}
+        setBlogs={setBlogs}
+        user={user}
+        showNotification={showNotification}
       />
     </div >
   )

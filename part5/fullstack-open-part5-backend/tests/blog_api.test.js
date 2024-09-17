@@ -68,7 +68,6 @@ beforeEach(async () => {
     const request = await api.post('/api/blogs')
       .send(initialBlogs[n])
       .set('Authorization', `Bearer ${token}`)
-
   }
 })
 
@@ -203,5 +202,19 @@ describe('put requests', () => {
 
 
 after(async () => {
+  // await User.deleteMany({})
+  // await Blog.deleteMany({})
+
+  // const request = await api.post('/api/users')
+  //   .send(initialUsers[0])
+  // const token = await getToken()
+
+  // for (let n in initialBlogs) {
+  //   let blogObject = new Blog(initialBlogs[n])
+  //   const request = await api.post('/api/blogs')
+  //     .send(initialBlogs[n])
+  //     .set('Authorization', `Bearer ${token}`)
+  // }
+
   await mongoose.connection.close()
 })

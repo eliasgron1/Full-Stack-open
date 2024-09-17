@@ -3,6 +3,7 @@ import pluginJs from "@eslint/js";
 import stylisticJs from '@stylistic/eslint-plugin-js'
 import babelParser from '@babel/eslint-parser'
 import reactPlugin from 'eslint-plugin-react'
+import vitestGlobalsPlugin from 'eslint-plugin-vitest-globals'
 
 
 export default [
@@ -10,20 +11,27 @@ export default [
 		files: ["**/*.{js,jsx}"],
 		languageOptions: {
 			sourceType: "module", // or "commonjs" based on your setup
-			globals: globals.browser,
+			globals: {
+				...globals.browser,
+				...vitestGlobalsPlugin.environments.env.globals,
+			},
 			parser: babelParser,
 			parserOptions: {
 				requireConfigFile: false, // Allows parsing without a Babel config file
 				babelOptions: {
-					presets: ["@babel/preset-react"], // Use Babel preset for React (if applicable)
+					presets: ["@babel/preset-react"],
 				},
 			},
 		},
 		plugins: {
 			'@stylistic/js': stylisticJs,
-			'react': reactPlugin
+			'react': reactPlugin,
+			'vitest-globals': vitestGlobalsPlugin,
 		},
 		rules: {
+			"react/jsx-uses-vars": "error",
+			"react/jsx-uses-react": "error",
+
 			"indent": [
 				"error",
 				2
@@ -47,16 +55,10 @@ export default [
 			"no-console": 0,
 			"react/react-in-jsx-scope": "off",
 			"react/prop-types": 0,
-			"no-unused-vars": [
-				"error", {
-					"varsIgnorePattern": "^_",  // Ignore variables starting with an underscore
-					"argsIgnorePattern": "^_",  // Ignore arguments starting with an underscore
-					"vars": "all",
-					"args": "none",
-					"caughtErrors": "none"
-				}],
+			"no-unused-vars":
+				"error",
 		},
 	},
 	{ ignores: ["**/dist/", "**/eslint.config.mjs", "**/tests", "**/vite.config.js"] },
-	pluginJs.configs.recommended,
+	pluginJs.configs.recommended
 ]

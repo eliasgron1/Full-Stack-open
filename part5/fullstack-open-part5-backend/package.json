@@ -4,9 +4,11 @@
   "description": "part4",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "dev": "cross-env NODE_ENV=development nodemon index.js",
     "start": "cross-env NODE_ENV=production node index.js",
     "test": "cross-env NODE_ENV=test node --test tests/blog_api.test.js",
+    "start:test": "cross-env NODE_ENV=test nodemon index.js",
     "testonlyone": "cross-env NODE_ENV=test node --test --test-name-pattern=\"put requests\" tests/blog_api.test.js",
     "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../frontend && npm run build && @powershell Copy-Item dist -Recurse ../full-stack-open-part3-backend",
     "deploy": "fly deploy",
