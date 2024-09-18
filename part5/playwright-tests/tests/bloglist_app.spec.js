@@ -52,5 +52,17 @@ describe('Blog Application', () => {
       await page.getByRole('button', { name: 'submit' }).click()
       await expect(page.getByText('added new blog made in')).toBeVisible()
     })
+
+    test('can like a blog', async ({ page }) => {
+      const blogElement = await page.locator('text=/new blog made in testing by playwrigthview/i').first()
+      await expect(blogElement).toBeVisible()
+
+      const viewButton = await blogElement.locator('button', { hasText: 'view' })
+      await expect(viewButton).toBeVisible()
+      await viewButton.click()
+
+      const likeButton = await blogElement.getByRole('button', { name: 'like' })
+      await likeButton.click()
+    })
   })
-})
+})  
