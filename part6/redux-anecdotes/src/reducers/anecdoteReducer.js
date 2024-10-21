@@ -1,4 +1,6 @@
+import { createSlice, current } from '@reduxjs/toolkit';
 import { sortByVotes, asObject } from '../util/anecdoteUtil'
+
 
 const anecdotesAtStart = [
   'If it hurts, do it more often',
@@ -11,48 +13,26 @@ const anecdotesAtStart = [
 
 const initialState = sortByVotes(anecdotesAtStart.map(asObject))
 
-const reducer = (state = initialState, action) => {
-  console.log('state now: ', state)
-  console.log('action', action.type)
-  console.log('payload:', action.payload)
-
-  switch (action.type) {
-    case 'UPVOTE': {
+const anecdotesSlice = createSlice({
+  name: 'anecdotes',
+  initialState,
+  reducers: {
+    upvoteAnecdote(state, action) {
       const id = action.payload.id
       const anecdoteToVote = state.find(anecdote => anecdote.id === id)
-      const upVotedAnecdote = { ...anecdoteToVote, votes: anecdoteToVote.votes + 1 }
-      const updatedState = state.map(anecdote => anecdote.id === id ? upVotedAnecdote : anecdote)
-      console.log('updated anecdote', upVotedAnecdote)
-      return sortByVotes(updatedState)
-    }
-    case 'NEW_ANECDOTE': {
+      console.log('anecdote to vote and id,', anecdoteToVote, id)
+      if (anecdoteToVote) {
+        anecdoteToVote.votes += 1
+      }
+      console.log('updated state', current(state))
+      return sortByVotes(state)
+    },
+    createNewAnecdote(state, action) {
       const newAnecdote = asObject(action.payload.content)
-      const updatedState = [...state, newAnecdote]
-      console.log('updatedState', updatedState)
-      return sortByVotes(updatedState)
-    }
-
-    default:
-      return state
-  }
-}
-
-export const incrementVoteOf = (id) => {
-  return {
-    type: 'UPVOTE',
-    payload: {
-      id
+      state.push(newAnecdote)
     }
   }
-}
-export const createNewAnecdote = (content) => {
-  return {
-    type: 'NEW_ANECDOTE',
-    payload: {
-      content
-    }
-  }
-}
+})
 
-
-export default reducer
+export const { upvoteAnecdote, createNewAnecdote } = anecdotesSlice.actions
+export default anecdotesSlice.reducer
