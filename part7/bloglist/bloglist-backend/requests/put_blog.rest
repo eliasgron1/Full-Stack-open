@@ -1,0 +1,8 @@
+PUT http://localhost:3003/api/blogs/66ae19275a34accb68e64fe6 HTTP/1.1
+content-type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IndyaXRlMTExIiwiaWQiOiI2NmE2M2E2ZWJjMzM1ZDRlNjFhYmYxYmUiLCJpYXQiOjE3MjMyMDk1MjR9.Kcf9r3ewZC-C-iMwIbp8bTqo3CvbMqisQt6YTWDuofE
+
+{
+    "url": "https://blaablaa.com/cookingtutorial",
+    "likes": 11
+}

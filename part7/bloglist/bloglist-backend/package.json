@@ -1,0 +1,43 @@
+{
+  "name": "part4",
+  "version": "1.0.0",
+  "description": "part4",
+  "main": "index.js",
+  "scripts": {
+    "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
+    "dev": "cross-env NODE_ENV=development nodemon index.js",
+    "start": "cross-env NODE_ENV=production node index.js",
+    "test": "cross-env NODE_ENV=test node --test tests/blog_api.test.js",
+    "start:test": "cross-env NODE_ENV=test nodemon index.js",
+    "testonlyone": "cross-env NODE_ENV=test node --test --test-name-pattern=\"put requests\" tests/blog_api.test.js",
+    "build:ui": "@powershell Remove-Item -Recurse -Force dist && cd ../bloglist-frontend && npm run build && @powershell Copy-Item dist -Recurse ../bloglist-backend",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs"
+  },
+  "author": "Elias Grönholm",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-async-errors": "^3.1.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.4.4",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.6.0",
+    "@flydotio/dockerfile": "^0.5.7",
+    "@stylistic/eslint-plugin-js": "^2.3.0",
+    "eslint": "^9.7.0",
+    "globals": "^15.7.0",
+    "nodemon": "^3.1.4",
+    "supertest": "^7.0.0"
+  },
+  "directories": {
+    "test": "tests"
+  }
+}
