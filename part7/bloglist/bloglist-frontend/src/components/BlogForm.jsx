@@ -36,7 +36,7 @@ const BlogForm = ({ user }) => {
   }
 
   return (
-    <div class="blogForm" >
+    <div className="blogForm" >
       {!user ? (
         <p>login to create a new blog entry</p>
       ) : (

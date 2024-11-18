@@ -3,6 +3,7 @@ const config = require('./utils/config') // variables such as port
 const middleware = require('./utils/middleware')
 require('express-async-errors') // eliminates the need for try-catch
 const express = require('express')  // express instance
+const path = require('path')
 const app = express()
 const cors = require('cors') // allow cross-origin resource sharing
 const blogsRouter = require('./controllers/blogs') // handle requests for /api/blogs
@@ -29,9 +30,12 @@ app.use(express.json())
 app.use(middleware.logRequests)
 app.use(middleware.getTokenFrom)
 
+app.use(express.static(path.join(config.DIRECTORY, 'dist')))
+
 app.use('/api/blogs', middleware.userExtractor, blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)
 

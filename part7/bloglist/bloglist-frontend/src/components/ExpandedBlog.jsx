@@ -11,8 +11,6 @@ const ExpandedBlog = ({ blog, user }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  console.log('blog in expanded', blog)
-
   // Handle likes, called when like button is pressed
   const likeHandler = (event) => {
     event.preventDefault()

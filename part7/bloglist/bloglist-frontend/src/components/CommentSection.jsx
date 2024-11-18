@@ -27,7 +27,7 @@ const CommentSection = ({ blog }) => {
   }
 
   return (
-    <div class="card">
+    <div className="card">
       <h2>comments</h2>
       {comments.length === 0 ? (
         <p>no comments yet...</p>

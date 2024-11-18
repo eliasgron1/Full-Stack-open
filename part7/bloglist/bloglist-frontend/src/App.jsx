@@ -32,6 +32,7 @@ const App = () => {
   // fetch initial blogs in database
   useEffect(() => {
     dispatch(initBlogs())
+
   }, [dispatch])
 
   const userMatch = useMatch('/users/:id')
@@ -48,7 +49,7 @@ const App = () => {
 
   return (
     <>
-      <div class="navbar card">
+      <div className="navbar card">
         <LoginForm user={loggedUser} />
         <NavBar />
       </div>
@@ -66,6 +67,7 @@ const App = () => {
           path="/blogs/:id"
           element={<ExpandedBlog user={loggedUser} blog={blog} />}
         />
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </>
   )

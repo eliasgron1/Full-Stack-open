@@ -2,6 +2,8 @@ const logger = require('./logger')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const process = require('process')
+const path = require('path')
+const config = require('./config')
 
 const logRequests = (request, response, next) => {
   logger.info('Method: ', request.method)
@@ -53,8 +55,10 @@ const errorHandler = (error, request, response, next) => {
   next(error)
 }
 
+
 const unknownEndpoint = (request, response) => {
-  response.status(404).send({ error: 'unknown endpoint' })
+  // response.status(404).send({ error: 'unknown endpoint' })
+  response.sendFile(path.join(config.DIRECTORY, 'dist', 'index.html'))
 }
 
 module.exports = {
